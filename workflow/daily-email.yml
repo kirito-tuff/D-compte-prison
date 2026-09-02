@@ -1,0 +1,24 @@
+name: Envoi mail quotidien décompte
+
+on:
+  schedule:
+    # Tous les jours à 19h00 heure de Paris (17h UTC en été, décalage ~1h en hiver)
+    - cron: '0 17 * * *'
+  workflow_dispatch: # permet de le lancer manuellement pour tester
+
+jobs:
+  envoyer-mail:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Configurer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Exécuter le script d'envoi
+        env:
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+        run: python decompte_mail.py
